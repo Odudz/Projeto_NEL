@@ -20,17 +20,17 @@ fonte = pg.font.SysFont("arial", 35)
 fonte_nome_menu = pg.font.SysFont("arial", 70)
 
 # IMAGENS:
-fundo_original = pg.image.load(
-    os.path.join("imgTeste", "fundoFaroeste.jpeg")
-).convert()
-
+fundo_original = pg.image.load(os.path.join("imgTeste", "fundoFaroeste.jpeg")).convert()
 fundo = pg.transform.scale(fundo_original, tela.get_size())
 
-# GIF
-backgroundGif = gifpg.load(
-    os.path.join("imgTeste", "Arbusto_Rolante.gif")
-)
+titulo_nome_original = pg.image.load(os.path.join("imgTeste", "titulo_nome.png"))
+titulo_nome = pg.transform.scale(titulo_nome_original, (1280 // 2, 720 // 2))
 
+botao_folder_original = pg.image.load(os.path.join("imgTeste", "botao_folder.png"))
+botao_folder = pg.transform.scale(botao_folder_original, (230,70))
+
+# GIF
+backgroundGif = gifpg.load(os.path.join("imgTeste", "Arbusto_Rolante.gif"))
 gif_x = -200
 gif_y = 400
 
@@ -46,38 +46,34 @@ branco = (255, 255, 255)
 # =========================
 ultimo_clique = 0
 
-def criar_botao(texto, x, y, largura, altura):
-
+def criar_botao_imagem(texto, imagem, x, y):
     global ultimo_clique
 
     mouse = pg.mouse.get_pos()
     clique = pg.mouse.get_pressed()
 
-    botao = pg.Rect(x, y, largura, altura)
+    # Cria o retângulo com base na posição (x, y) e tamanho da imagem
+    botao = imagem.get_rect(topleft=(x, y))
 
     agora = pg.time.get_ticks()
+    clicou = False
 
     if botao.collidepoint(mouse):
-        cor = marrom_claro
-
         # Verifica clique + cooldown
         if clique[0] and agora - ultimo_clique > 2000:
-
             ultimo_clique = agora
-            return True
+            clicou = True
 
-    else:
-        cor = marrom
+    # 1. Desenha a imagem do botão na tela
+    tela.blit(imagem, botao)
 
-    pg.draw.rect(tela, cor, botao, border_radius=12)
-
+    # 2. Renderiza e centraliza o texto por cima da imagem
     texto_render = fonte.render(texto, True, branco)
-
     texto_rect = texto_render.get_rect(center=botao.center)
-
     tela.blit(texto_render, texto_rect)
 
-    return False
+    return clicou
+
 
 
 # LOOP PRINCIPAL
@@ -93,13 +89,13 @@ while running:
     backgroundGif.render(tela, (gif_x, gif_y))
 
     #Colocar nome do jogo
-    texto_nome = fonte_nome_menu.render("Projeto Final - NEL",True,"white", marrom)
-    tela.blit(texto_nome, (400, 100))
-    #COLOCAR IMAGEM PARA O MENU INICIAL DOQ COLOCAR BOTAO
+    tela.blit(titulo_nome, (340,50))
 
-    # BOTÃO MENU
-    if criar_botao("Começar jogo", 540, 300, 230, 70):
+    # BOTÃO jogar
+    if criar_botao_imagem("Começar jogo",botao_folder , 540, 400):
         print("Jogo iniciado!")
+    if criar_botao_imagem("Sair",botao_folder,540, 600):
+        pg.quit()
 
     pg.display.flip()
     clock.tick(60)
