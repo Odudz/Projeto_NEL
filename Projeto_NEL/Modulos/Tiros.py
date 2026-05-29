@@ -1,6 +1,6 @@
 import pygame as pg
 import Variaveis_Globais as vg
-import random, math, subprocess, sys, os
+import random, math, subprocess, sys, os, utils
 from Classes import Jogador, Inimigo, Projetil, Explosao
 
 pg.init()
@@ -89,7 +89,7 @@ while rodando:
 
             if distancia < projetil.raio + inimigo.raio:
 
-                inimigo.vida -= projetil.dano
+                utils.TomarDano(inimigo, jogador)
 
                 explosoes.append(
                     Explosao(
@@ -112,7 +112,7 @@ while rodando:
 
                 explosoes.remove(explosao)
 
-        if inimigo.vida <= 0:
+        if inimigo.stats["VIDA_ATUAL"] <= 0:
 
             inimigo = Inimigo()
 
@@ -129,7 +129,7 @@ while rodando:
         explosao.desenhar()
 
     texto = fonte.render(
-        f"Vida do inimigo: {inimigo.vida}",
+        f"Vida do inimigo: {inimigo.stats["VIDA_ATUAL"]}",
         True,
         vg.BRANCO
     )
