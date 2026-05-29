@@ -1,9 +1,9 @@
-try:
-    import os.path, subprocess, sys
-    import gif_pygame as gifpg
-    from Modulos import Variaveis_Globais as vg
-    import pygame as pg
+import os, subprocess, sys
+import gif_pygame as gifpg
+from Modulos import Variaveis_Globais as vg
 
+try:
+    import pygame as pg
 except ImportError:
     print("Erro no import.")
     sys.exit(2)
@@ -23,10 +23,10 @@ fonte_nome_menu = pg.font.SysFont("arial", 70)
 fundo_original = pg.image.load(os.path.join( "Imagens", "Menu", "fundoFaroeste.jpeg")).convert()
 fundo = pg.transform.scale(fundo_original, tela.get_size())
 
-titulo_nome_original = pg.image.load(os.path.join("Imagens", "Menu", "titulo_nome.png"))
+titulo_nome_original = pg.image.load(os.path.join( "Imagens", "Menu", "titulo_nome.png"))
 titulo_nome = pg.transform.scale(titulo_nome_original, (1280 // 2, 720 // 2))
 
-botao_folder_original = pg.image.load(os.path.join("Imagens", "Menu", "botao_folder.png"))
+botao_folder_original = pg.image.load(os.path.join( "Imagens", "Menu", "botao_folder.png"))
 botao_folder = pg.transform.scale(botao_folder_original, (400,200))
 
 # GIF
@@ -41,7 +41,7 @@ marrom_claro = (180,100,29)
 branco = (255, 255, 255)
 
 #Musica de fundo
-MUSICA_FUNDO = pg.mixer_music.load(os.path.join(vg.SONS, "musica_fundo.mp3"))
+MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
 
 # =========================
