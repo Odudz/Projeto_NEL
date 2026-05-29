@@ -1,0 +1,119 @@
+try:
+    import os.path
+    import subprocess
+    import sys
+    import gif_pygame as gifpg
+    import pygame as pg
+except ImportError:
+    print("Erro no import.")
+    sys.exit(2)
+
+# pygame inicialização
+pg.init()
+
+tela = pg.display.set_mode((1280, 720))
+clock = pg.time.Clock()
+running = True
+
+# FONTES
+fonte = pg.font.SysFont("arial", 35)
+fonte_nome_menu = pg.font.SysFont("arial", 70)
+
+# IMAGENS:
+fundo_original = pg.image.load(os.path.join("Imagens", "fundoFaroeste.jpeg")).convert()
+fundo = pg.transform.scale(fundo_original, tela.get_size())
+
+titulo_nome_original = pg.image.load(os.path.join("Imagens", "titulo_nome.png"))
+titulo_nome = pg.transform.scale(titulo_nome_original, (1280 // 2, 720 // 2))
+
+botao_folder_original = pg.image.load(os.path.join("Imagens", "botao_folder.png"))
+botao_folder = pg.transform.scale(botao_folder_original, (400,200))
+
+# GIF
+backgroundGif = gifpg.load(os.path.join("Imagens", "Arbusto_Rolante.gif"))
+gif_x = -200
+gif_y = 400
+
+# CORES
+vermelho = (255, 0, 0)
+marrom = (150,75,0)
+marrom_claro = (180,100,29)
+branco = (255, 255, 255)
+
+#Musica de fundo
+MUSICA_FUNDO = pg.mixer_music.load(os.path.join("Sons", "musica_fundo.mp3"))
+pg.mixer.music.play(-1)
+
+# =========================
+# FUNÇÃO DO BOTÃO
+# =========================
+ultimo_clique = 0
+
+def criar_botao_imagem(texto, imagem, x, y):
+    global ultimo_clique
+
+    mouse = pg.mouse.get_pos()
+    clique = pg.mouse.get_pressed()
+
+    # Cria o retângulo com base na posição (x, y) e tamanho da imagem
+    botao = imagem.get_rect(center=(x,y))
+    botao_menor = botao.inflate(-100, -50)
+
+    agora = pg.time.get_ticks()
+    clicou = False
+
+    if botao_menor.collidepoint(mouse):
+        # Verifica clique + cooldown
+        if clique[0] and agora - ultimo_clique > 1000:
+            ultimo_clique = agora
+            clicou = True
+
+    # 1. Desenha a imagem do botão na tela
+    tela.blit(imagem, botao)
+
+
+    # 2. Renderiza e centraliza o texto por cima da imagem
+    texto_render = fonte.render(texto, True, branco)
+    texto_rect = texto_render.get_rect(center=botao.center)
+    tela.blit(texto_render, texto_rect)
+
+    return clicou
+
+def creditos():
+    pass
+
+# LOOP PRINCIPAL
+while running:
+
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            running = False
+
+    #coloca o fundo
+    tela.blit(fundo, (0, 0))
+    # GIF
+    backgroundGif.render(tela, (gif_x, gif_y))
+
+    #Colocar nome do jogo
+    tela.blit(titulo_nome, (325,50))
+
+    # BOTÃO jogar
+    if criar_botao_imagem("Começar jogo",botao_folder , 640, 400):
+        pg.quit()
+        subprocess.run([sys.executable,os.path.join("..", "Tiros", "Tiros.py")])
+        sys.exit()
+
+    # Botao creditos
+    if criar_botao_imagem("Créditos", botao_folder, 640, 500):
+        print("Creditos")
+        creditos()
+        #FAZER FUNCAO PARA ROLAR OS CREDITOS
+
+    #Botao sair
+    if criar_botao_imagem("Sair",botao_folder,640, 600):
+        running = False
+
+    pg.display.flip()
+    clock.tick(60)
+
+pg.quit()
