@@ -20,17 +20,17 @@ fonte = pg.font.SysFont("arial", 35)
 fonte_nome_menu = pg.font.SysFont("arial", 70)
 
 # IMAGENS:
-fundo_original = pg.image.load(os.path.join("Projeto_NEL", "Imagens", "Menu", "fundoFaroeste.jpeg")).convert()
+fundo_original = pg.image.load(os.path.join( "Imagens", "Menu", "fundoFaroeste.jpeg")).convert()
 fundo = pg.transform.scale(fundo_original, tela.get_size())
 
-titulo_nome_original = pg.image.load(os.path.join("Projeto_NEL", "Imagens", "Menu", "titulo_nome.png"))
+titulo_nome_original = pg.image.load(os.path.join("Imagens", "Menu", "titulo_nome.png"))
 titulo_nome = pg.transform.scale(titulo_nome_original, (1280 // 2, 720 // 2))
 
-botao_folder_original = pg.image.load(os.path.join("Projeto_NEL", "Imagens", "Menu", "botao_folder.png"))
+botao_folder_original = pg.image.load(os.path.join("Imagens", "Menu", "botao_folder.png"))
 botao_folder = pg.transform.scale(botao_folder_original, (400,200))
 
 # GIF
-backgroundGif = gifpg.load(os.path.join("Projeto_NEL", "Imagens", "Menu", "Arbusto_Rolante.gif"))
+backgroundGif = gifpg.load(os.path.join("Imagens", "Menu", "Arbusto_Rolante.gif"))
 gif_x = -200
 gif_y = 400
 
@@ -41,7 +41,7 @@ marrom_claro = (180,100,29)
 branco = (255, 255, 255)
 
 #Musica de fundo
-MUSICA_FUNDO = pg.mixer_music.load(os.path.join("Projeto_NEL", vg.SONS, "musica_fundo.mp3"))
+MUSICA_FUNDO = pg.mixer_music.load(os.path.join(vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
 
 # =========================
@@ -100,7 +100,7 @@ while running:
     # BOTÃO jogar
     if criar_botao_imagem("Começar jogo",botao_folder , 640, 400):
         pg.quit()
-        subprocess.run([sys.executable,os.path.join("Projeto_NEL", "Modulos", "Tiros.py")])
+        subprocess.run([sys.executable,os.path.join("Modulos", "Tiros.py")])
         sys.exit()
 
     # Botao creditos
