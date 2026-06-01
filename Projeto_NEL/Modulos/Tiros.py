@@ -6,7 +6,7 @@ import utils,math, subprocess, sys, os
 pg.init()
 
 #Som tiro
-som_tiro = pg.mixer.Sound(os.path.join("..",vg.SONS, "tiro_som.ogg"))
+som_tiro = pg.mixer.Sound(os.path.join(vg.SONS, "tiro_som.ogg"))
 
 tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
 pg.display.set_caption("Sistema de Tiros")
