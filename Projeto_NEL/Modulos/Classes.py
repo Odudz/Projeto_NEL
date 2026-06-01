@@ -13,7 +13,7 @@ class Jogador:
             "TAXA_ATAQUES"    : 100, # Tempo em milissegundos entre os tiros
             "VELOCIDADE_TIRO" : 10,  # Velocidade do tiro
             "QUANTIDADE_TIRO" : 1,   # Quantidade de tiros disparados de uma vez
-            "CHANCE_CRITICO"  : 100,  # Chance de critico %
+            "CHANCE_CRITICO"  : 25,  # Chance de critico %
             "DANO_CRITICO"    : 2,   # Quantia que multiplicará em caso de critico
         }
 
