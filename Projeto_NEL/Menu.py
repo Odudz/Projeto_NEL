@@ -18,6 +18,7 @@ running = True
 # FONTES
 fonte = pg.font.SysFont("arial", 35)
 fonte_nome_menu = pg.font.SysFont("arial", 70)
+fonte_creditos = pg.font.SysFont("arial", 25)
 
 # IMAGENS:
 fundo_original = pg.image.load(os.path.join( "Imagens", "Menu", "fundoFaroeste.jpeg")).convert()
@@ -34,15 +35,14 @@ backgroundGif = gifpg.load(os.path.join("Imagens", "Menu", "Arbusto_Rolante.gif"
 gif_x = -200
 gif_y = 400
 
-# CORES
-vermelho = (255, 0, 0)
-marrom = (150,75,0)
-marrom_claro = (180,100,29)
-branco = (255, 255, 255)
 
 #Musica de fundo
 MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
+
+
+#Para funcionamento dos creditos
+tela_atual = "menu"
 
 # =========================
 # FUNÇÃO DO BOTÃO
@@ -73,45 +73,74 @@ def criar_botao_imagem(texto, imagem, x, y):
 
 
     # 2. Renderiza e centraliza o texto por cima da imagem
-    texto_render = fonte.render(texto, True, branco)
+    texto_render = fonte.render(texto, True, vg.BRANCO)
     texto_rect = texto_render.get_rect(center=botao.center)
     tela.blit(texto_render, texto_rect)
 
     return clicou
 
 def creditos():
-    pass
+    tela.fill(vg.PRETO)
+
+    textos = [
+        "Projeto NEL",
+        "",
+        "Programacao:",
+        "Eduardo Pimenta",
+        "Natália Sales",
+        "Leonardo Portes",
+        "",
+        "Arte:",
+        "@Ghilphea",
+        "",
+        "Musicas:",
+        "Ciclano",
+        "Juliano Jeremias",
+        "",
+        "ESC para voltar"
+    ]
+
+    y = 50
+
+    for texto in textos:
+        render = fonte_creditos.render(texto, True, vg.BRANCO)
+        rect = render.get_rect(center=(640, y))
+        tela.blit(render, rect)
+        y += 50
 
 # LOOP PRINCIPAL
 while running:
 
     for event in pg.event.get():
+
         if event.type == pg.QUIT:
             running = False
 
-    #coloca o fundo
-    tela.blit(fundo, (0, 0))
-    # GIF
-    backgroundGif.render(tela, (gif_x, gif_y))
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
+                tela_atual = "menu"
 
-    #Colocar nome do jogo
-    tela.blit(titulo_nome, (325,50))
+    if tela_atual == "menu":
 
-    # BOTÃO jogar
-    if criar_botao_imagem("Começar jogo",botao_folder , 640, 400):
-        pg.quit()
-        subprocess.run([sys.executable,os.path.join("Modulos", "Tiros.py")])
-        sys.exit()
+        tela.blit(fundo, (0, 0))
 
-    # Botao creditos
-    if criar_botao_imagem("Créditos", botao_folder, 640, 500):
-        print("Creditos")
+        backgroundGif.render(tela, (gif_x, gif_y))
+
+        tela.blit(titulo_nome, (325, 50))
+
+        if criar_botao_imagem("Começar jogo", botao_folder, 640, 400):
+            pg.quit()
+            subprocess.run([sys.executable, os.path.join("Modulos", "Tiros.py")])
+            sys.exit()
+
+        if criar_botao_imagem("Créditos", botao_folder, 640, 500):
+            tela_atual = "creditos"
+
+        if criar_botao_imagem("Sair", botao_folder, 640, 600):
+            running = False
+
+    elif tela_atual == "creditos":
         creditos()
-        #FAZER FUNCAO PARA ROLAR OS CREDITOS
-
-    #Botao sair
-    if criar_botao_imagem("Sair",botao_folder,640, 600):
-        running = False
 
     pg.display.flip()
     clock.tick(60)
