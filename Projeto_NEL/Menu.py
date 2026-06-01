@@ -41,7 +41,7 @@ marrom_claro = (180,100,29)
 branco = (255, 255, 255)
 
 #Musica de fundo
-MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
+MUSICA_FUNDO = pg.mixer_music.load(os.path.join( "Sons", "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
 
 # =========================

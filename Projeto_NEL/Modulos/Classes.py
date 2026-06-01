@@ -1,6 +1,7 @@
 import pygame as pg
 import Variaveis_Globais as vg
 import random, math, sys, os
+from utils import StatusInimigo
 
 class Jogador:
     def __init__(self):
@@ -10,9 +11,9 @@ class Jogador:
             "VIDA_MAXIMA"     : 100, # Vida máxima
             "DANO"            : 10,  # Dano base
             "VELOCIDADE"      : 5,   # Velocidade do player
-            "TAXA_ATAQUES"    : 100, # Tempo em milissegundos entre os tiros
+            "TAXA_ATAQUES"    : 500, # Tempo em milissegundos entre os tiros
             "VELOCIDADE_TIRO" : 10,  # Velocidade do tiro
-            "QUANTIDADE_TIRO" : 1,   # Quantidade de tiros disparados de uma vez
+            "QUANTIDADE_TIRO" : 3,   # Quantidade de tiros disparados de uma vez
             "CHANCE_CRITICO"  : 25,  # Chance de critico %
             "DANO_CRITICO"    : 2,   # Quantia que multiplicará em caso de critico
         }
@@ -79,12 +80,7 @@ class Inimigo:
         self.raio = 30
         self.vida = 100
 
-        self.stats = {
-            "VIDA_ATUAL": 100,
-            "DANO": 10,
-            "TAXA_ATAQUES": 1,
-            "VELOCIDADE_TIRO": 5,
-        }
+        self.stats = StatusInimigo()
 
     def desenhar(self):
         pg.draw.circle(
@@ -106,7 +102,7 @@ class Inimigo:
             (
                 self.x - 30,
                 self.y - 45,
-                60 * (self.stats["VIDA_ATUAL"] / 100),
+                60 * (self.stats["VIDA_ATUAL"] / self.stats["VIDA_MAXIMA"]),
                 8
             )
         )

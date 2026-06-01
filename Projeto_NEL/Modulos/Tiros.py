@@ -1,12 +1,12 @@
 import pygame as pg
 import Variaveis_Globais as vg
 from Classes import Jogador, Inimigo, Projetil, Explosao
-import utils,math, subprocess, sys, os
+import utils, subprocess, sys, os
 
 pg.init()
 
 #Som tiro
-som_tiro = pg.mixer.Sound(os.path.join("..",vg.SONS, "tiro_som.ogg"))
+som_tiro = pg.mixer.Sound(os.path.join(vg.SONS, "tiro_som.ogg"))
 
 tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
 pg.display.set_caption("Sistema de Tiros")
@@ -21,6 +21,7 @@ inimigo = Inimigo()
 
 projeteis = []
 explosoes = []
+inimigos  = []
 
 pause = False
 
@@ -51,20 +52,16 @@ while rodando:
         if not pause:
 
             if evento.type == pg.MOUSEBUTTONDOWN:
+                agora = pg.time.get_ticks()
+                if agora >= vg.PROXIMO_TIRO:
+                    vg.PROXIMO_TIRO = agora + jogador.stats["TAXA_ATAQUES"]
 
-                mx, my = pg.mouse.get_pos()
+                    mx, my = pg.mouse.get_pos()
 
-                som_tiro.play()
+                    som_tiro.play()
 
-                projeteis.append(
-                    Projetil(
-                        jogador.x,
-                        jogador.y,
-                        mx,
-                        my,
-                        jogador.stats["VELOCIDADE_TIRO"]
-                    )
-                )
+                    utils.Atirar(projeteis, Projetil, jogador, mx, my)
+                    vg.RAJADA += jogador.stats["QUANTIDADE_TIRO"] - 1
 
     tela.fill(vg.PRETO)
 
@@ -74,16 +71,17 @@ while rodando:
 
         jogador.mover(teclas)
 
+        mx, my = pg.mouse.get_pos()
+        utils.Tiros(projeteis, Projetil, jogador)
+
         for projetil in projeteis[:]:
 
-
+            #Move Projetil
             projetil.mover()
 
-            distancia = math.sqrt(
-                (projetil.x - inimigo.x) ** 2 +
-                (projetil.y - inimigo.y) ** 2
-            )
+            distancia = utils.ChecarDistancia(projetil, inimigo)
 
+            #Caso o tiro acerte o alvo
             if distancia < projetil.raio + inimigo.raio:
 
                 utils.TomarDano(inimigo, jogador)
@@ -97,9 +95,11 @@ while rodando:
 
                 projeteis.remove(projetil)
 
+            #Projetil fora da tela
             elif projetil.fora_da_tela():
 
                 projeteis.remove(projetil)
+
 
         for explosao in explosoes[:]:
 
@@ -111,6 +111,7 @@ while rodando:
 
         if inimigo.stats["VIDA_ATUAL"] <= 0:
 
+            utils.InimigoMorto(jogador)
             inimigo = Inimigo()
 
     jogador.desenhar()
@@ -133,6 +134,7 @@ while rodando:
 
     tela.blit(texto, (20, 20))
 
+    #Jogo Pausado
     if pause:
 
         texto_menu = fonte.render(
