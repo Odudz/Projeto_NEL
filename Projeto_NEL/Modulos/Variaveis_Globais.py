@@ -1,4 +1,5 @@
-import pygame as pg
+import pygame as pg, os
+
 LARGURA = 1280
 ALTURA = 720
 
@@ -24,3 +25,11 @@ PROXIMO_TIRO = 0
 
 IMAGENS = "Imagens"
 SONS    = "Sons"
+
+botao_folder_original = pg.image.load(os.path.join( "Imagens", "Menu", "botao_folder.png"))
+botao_folder = pg.transform.scale(botao_folder_original, (400,200))
+
+# FONTES
+fonte = pg.font.SysFont("arial", 35)
+fonte_nome_menu = pg.font.SysFont("arial", 70)
+fonte_creditos = pg.font.SysFont("arial", 25)

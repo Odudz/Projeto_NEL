@@ -1,6 +1,10 @@
 import pygame as pg
+
+# pygame inicialização
+pg.init()
+
 import Variaveis_Globais as vg
-import random, math, sys, os
+import random, math
 from utils import StatusInimigo
 
 class Jogador:
@@ -70,12 +74,6 @@ class Jogador:
             vg.AZUL,
             (self.x, self.y),
             self.raio
-        )
-
-        pg.draw.rect(
-            vg.tela,
-            vg.VERMELHO,
-            (self.x - 30, self.y - 45, 60, 8)
         )
 
         pg.draw.rect(

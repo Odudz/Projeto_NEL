@@ -1,12 +1,18 @@
 import pygame as pg
+
+# pygame inicialização
+pg.init()
+
 import Variaveis_Globais as vg
 from Classes import Jogador, Inimigo, Projetil, ProjetilInimigo, Explosao
 import utils, subprocess, sys, os, random, math
 
-pg.init()
-
 #Som tiro
 som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som.ogg"))
+
+#Imagens
+pausado_original = pg.image.load(os.path.join("Imagens","Jogo", "Pausado.png")).convert()
+pausado = pg.transform.scale(pausado_original, (1280 // 2, 720 // 2))
 
 LARGURA = 1280
 ALTURA = 720
@@ -35,7 +41,7 @@ projeteis = []
 explosoes = []
 projeteis_inimigo = []
 
-vg.ONDA = 0
+wave = 1
 quantidade_inimigos = 5
 
 inimigos = utils.Criar_Wave(Inimigo)
@@ -61,31 +67,6 @@ while rodando:
 
             if evento.key == pg.K_ESCAPE and not gamer_over:
                 pause = not pause
-
-            if evento.key == pg.K_r and gamer_over:
-                jogador = Jogador()
-                vg.ONDA = 0
-                quantidade_inimigos = 5
-                inimigos = utils.Criar_Wave(Inimigo)
-
-                projeteis.clear()
-                explosoes.clear()
-                projeteis_inimigo.clear()
-
-                tempo_dano = 0
-
-                gamer_over = False
-                pause = False
-
-            if evento.key == pg.K_m and (pause or gamer_over):
-                pg.quit()
-
-                subprocess.run([
-                    sys.executable,
-                    os.path.join("..", "Menu", "Menu.py")
-                ])
-
-                sys.exit()
 
         if not pause:
 
@@ -263,7 +244,7 @@ while rodando:
     tela.blit(texto, (20, 60))
 
     texto = fonte.render(
-        f"Wave: {vg.ONDA}",
+        f"Wave: {wave}",
         True,
         BRANCO
     )
@@ -271,20 +252,6 @@ while rodando:
     tela.blit(texto, (20, 120))
 
     if pause:
-
-        texto_menu = fonte.render(
-            "Pressione M para voltar ao menu",
-            True,
-            BRANCO
-        )
-
-        tela.blit(
-            texto_menu,
-            (
-                LARGURA // 2 - texto_menu.get_width() // 2,
-                ALTURA // 2 + 50
-            )
-        )
 
         overlay = pg.Surface(
             (LARGURA, ALTURA)
@@ -296,19 +263,16 @@ while rodando:
 
         tela.blit(overlay, (0, 0))
 
-        texto_pause = fonte_pause.render(
-            "PAUSADO",
-            True,
-            BRANCO
-        )
+        tela.blit(pausado,(vg.LARGURA //2, 200))
 
-        tela.blit(
-            texto_pause,
-            (
-                LARGURA // 2 - texto_pause.get_width() // 2,
-                ALTURA // 2 - 30
-            )
-        )
+
+        if utils.criar_botao_imagem("Voltar ao menu", vg.botao_folder, vg.LARGURA//2, 500):
+            pg.quit()
+            subprocess.run([sys.executable, os.path.join("Menu.py")])
+            sys.exit()
+
+        if utils.criar_botao_imagem("Continuar", vg.botao_folder, vg.LARGURA//2, 200):
+            pause = not pause
 
     if gamer_over:
 
@@ -330,29 +294,25 @@ while rodando:
              ALTURA // 2 - 80)
         )
 
-        texto_recomecar = fonte.render(
-            "Pressione R para reiniciar",
-            True,
-            BRANCO
-        )
+        if utils.criar_botao_imagem("Voltar ao menu", vg.botao_folder, vg.LARGURA//2, 500):
+            pg.quit()
+            subprocess.run([sys.executable, os.path.join( "Menu.py")])
+            sys.exit()
 
-        tela.blit(
-            texto_recomecar,
-            (LARGURA // 2 - texto_recomecar.get_width() // 2,
-             ALTURA // 2 + 10)
-        )
+        if utils.criar_botao_imagem("Reiniciar", vg.botao_folder, vg.LARGURA // 2, 400):
+            jogador = Jogador()
+            wave = 1
+            quantidade_inimigos = 5
+            inimigos = utils.Criar_Wave(Inimigo)
 
-        texto_menu = fonte.render(
-            "Pressione M para voltar ao menu",
-            True,
-            BRANCO
-        )
+            projeteis.clear()
+            explosoes.clear()
+            projeteis_inimigo.clear()
 
-        tela.blit(
-            texto_menu,
-            (LARGURA // 2 - texto_menu.get_width() // 2,
-             ALTURA // 2 + 50)
-        )
+            tempo_dano = 0
+
+            gamer_over = False
+            pause = False
 
     pg.display.update()
 

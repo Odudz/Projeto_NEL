@@ -1,15 +1,11 @@
-import os, subprocess, sys
-import gif_pygame as gifpg
-from Modulos import Variaveis_Globais as vg
-
-try:
-    import pygame as pg
-except ImportError:
-    print("Erro no import.")
-    sys.exit(2)
+import pygame as pg
 
 # pygame inicialização
 pg.init()
+
+import os, subprocess, sys
+import gif_pygame as gifpg
+from Modulos import Variaveis_Globais as vg
 
 tela = pg.display.set_mode((1280, 720))
 clock = pg.time.Clock()
@@ -27,9 +23,6 @@ fundo = pg.transform.scale(fundo_original, tela.get_size())
 titulo_nome_original = pg.image.load(os.path.join( "Imagens", "Menu", "titulo_nome.png"))
 titulo_nome = pg.transform.scale(titulo_nome_original, (1280 // 2, 720 // 2))
 
-botao_folder_original = pg.image.load(os.path.join( "Imagens", "Menu", "botao_folder.png"))
-botao_folder = pg.transform.scale(botao_folder_original, (400,200))
-
 # GIF
 backgroundGif = gifpg.load(os.path.join("Imagens", "Menu", "Arbusto_Rolante.gif"))
 gif_x = -200
@@ -39,15 +32,6 @@ gif_y = 400
 #Musica de fundo
 MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
-
-
-#Para funcionamento dos creditos
-tela_atual = "menu"
-
-# =========================
-# FUNÇÃO DO BOTÃO
-# =========================
-ultimo_clique = 0
 
 def criar_botao_imagem(texto, imagem, x, y):
     global ultimo_clique
@@ -69,22 +53,21 @@ def criar_botao_imagem(texto, imagem, x, y):
             clicou = True
 
     # 1. Desenha a imagem do botão na tela
-    tela.blit(imagem, botao)
+    vg.tela.blit(imagem, botao)
 
 
     # 2. Renderiza e centraliza o texto por cima da imagem
-    texto_render = fonte.render(texto, True, vg.BRANCO)
+    texto_render = vg.fonte.render(texto, True, vg.BRANCO)
     texto_rect = texto_render.get_rect(center=botao.center)
-    tela.blit(texto_render, texto_rect)
+    vg.tela.blit(texto_render, texto_rect)
 
     return clicou
 
 def creditos():
-    tela.fill(vg.PRETO)
+    vg.tela.fill(vg.PRETO)
 
     textos = [
-        "Projeto NEL",
-        "",
+        "ESC para sair",
         "Programacao:",
         "Eduardo Pimenta",
         "Natália Sales",
@@ -94,19 +77,28 @@ def creditos():
         "@Ghilphea",
         "",
         "Musicas:",
-        "Ciclano",
-        "Juliano Jeremias",
         "",
-        "ESC para voltar"
+        "Efeitos especiais",
+        "Juliano Jeremias",
     ]
 
     y = 50
 
     for texto in textos:
-        render = fonte_creditos.render(texto, True, vg.BRANCO)
+        render = vg.fonte_creditos.render(texto, True, vg.BRANCO)
         rect = render.get_rect(center=(640, y))
-        tela.blit(render, rect)
+        vg.tela.blit(render, rect)
         y += 50
+
+
+#Para funcionamento dos creditos
+tela_atual = "menu"
+
+# =========================
+# FUNÇÃO DO BOTÃO
+# =========================
+ultimo_clique = 0
+
 
 # LOOP PRINCIPAL
 while running:
@@ -128,15 +120,15 @@ while running:
 
         tela.blit(titulo_nome, (325, 50))
 
-        if criar_botao_imagem("Começar jogo", botao_folder, 640, 400):
+        if criar_botao_imagem("Começar jogo", vg.botao_folder, 640, 400):
             pg.quit()
             subprocess.run([sys.executable, os.path.join("Modulos", "Tiros.py")])
             sys.exit()
 
-        if criar_botao_imagem("Créditos", botao_folder, 640, 500):
+        if criar_botao_imagem("Créditos", vg.botao_folder, 640, 500):
             tela_atual = "creditos"
 
-        if criar_botao_imagem("Sair", botao_folder, 640, 600):
+        if criar_botao_imagem("Sair", vg.botao_folder, 640, 600):
             running = False
 
     elif tela_atual == "creditos":
