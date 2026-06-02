@@ -1,15 +1,26 @@
 import pygame as pg
 import Variaveis_Globais as vg
-from Classes import Jogador, Inimigo, Projetil, Explosao
-import utils, subprocess, sys, os
+from Classes import Jogador, Inimigo, Projetil, ProjetilInimigo, Explosao
+import utils, subprocess, sys, os, random, math
 
 pg.init()
 
 #Som tiro
-som_tiro = pg.mixer.Sound(os.path.join(vg.SONS, "tiro_som.ogg"))
+som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som.ogg"))
 
-tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
+LARGURA = 1280
+ALTURA = 720
+
+tela = pg.display.set_mode((LARGURA, ALTURA))
 pg.display.set_caption("Sistema de Tiros")
+
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+VERMELHO = (255, 0, 0)
+VERDE = (0, 255, 0)
+AZUL = (0, 100, 255)
+AMARELO = (255, 255, 0)
+CINZA = (40, 40, 40)
 
 clock = pg.time.Clock()
 
@@ -17,19 +28,29 @@ fonte = pg.font.SysFont("Arial", 28)
 fonte_pause = pg.font.SysFont("Arial", 60)
 
 jogador = Jogador()
-inimigo = Inimigo()
+
+tempo_dano = 0
 
 projeteis = []
 explosoes = []
-inimigos  = []
+projeteis_inimigo = []
+
+wave = 1
+quantidade_inimigos = 5
+
+inimigos = utils.Criar_Wave(Inimigo)
 
 pause = False
+gamer_over = False
 
 rodando = True
 
 while rodando:
 
     clock.tick(60)
+
+    if not gamer_over:
+        tempo_dano += 1
 
     for evento in pg.event.get():
 
@@ -38,20 +59,38 @@ while rodando:
 
         if evento.type == pg.KEYDOWN:
 
-            if evento.key == pg.K_ESCAPE:
+            if evento.key == pg.K_ESCAPE and not gamer_over:
                 pause = not pause
 
-            if pause and evento.key == pg.K_m:
+            if evento.key == pg.K_r and gamer_over:
+                jogador = Jogador()
+                wave = 1
+                quantidade_inimigos = 5
+                inimigos = utils.Criar_Wave(Inimigo)
 
+                projeteis.clear()
+                explosoes.clear()
+                projeteis_inimigo.clear()
+
+                tempo_dano = 0
+
+                gamer_over = False
+                pause = False
+
+            if evento.key == pg.K_m and (pause or gamer_over):
                 pg.quit()
 
-                subprocess.run([sys.executable,os.path.join( "Menu.py")])
+                subprocess.run([
+                    sys.executable,
+                    os.path.join("..", "Menu", "Menu.py")
+                ])
 
                 sys.exit()
 
         if not pause:
 
             if evento.type == pg.MOUSEBUTTONDOWN:
+
                 agora = pg.time.get_ticks()
                 if agora >= vg.PROXIMO_TIRO:
                     vg.PROXIMO_TIRO = agora + jogador.stats["TAXA_ATAQUES"]
@@ -63,28 +102,108 @@ while rodando:
                     utils.Atirar(projeteis, Projetil, jogador, mx, my)
                     vg.RAJADA += jogador.stats["QUANTIDADE_TIRO"] - 1
 
-    tela.fill(vg.PRETO)
+    tela.fill(PRETO)
 
-    if not pause:
+    if not pause and not gamer_over:
 
         teclas = pg.key.get_pressed()
+
+        x_antigo = jogador.x
+        y_antigo = jogador.y
 
         jogador.mover(teclas)
 
         mx, my = pg.mouse.get_pos()
         utils.Tiros(projeteis, Projetil, jogador)
 
+        for inimigo in inimigos:
+            inimigo.mover(jogador)
+
+            inimigo.stats["ULTIMO_TIRO"] += 1
+
+            if inimigo.stats["ULTIMO_TIRO"] >= inimigo.stats["TAXA_ATAQUES"]:
+                som_tiro.play()
+                projeteis_inimigo.append( ProjetilInimigo(
+                    inimigo.x,
+                    inimigo.y,
+                    jogador.x,
+                    jogador.y,
+                    inimigo.stats["DANO"],
+                ))
+
+                inimigo.stats["ULTIMO_TIRO"] = 0
+
+        for inimigo in inimigos:
+
+            distancia_player = math.sqrt(
+                (jogador.x - inimigo.x) ** 2 +
+                (jogador.y - inimigo.y) ** 2
+            )
+
+            if distancia_player < jogador.raio + inimigo.raio:
+
+                jogador.x = x_antigo
+                jogador.y = y_antigo
+
+                if tempo_dano >= 15 and jogador.stats["VIDA_ATUAL"] > 0:
+
+                    jogador.stats["VIDA_ATUAL"] -= inimigo.stats["DANO"]
+
+                    if jogador.stats["VIDA_ATUAL"] < 0:
+                        jogador.stats["VIDA_ATUAL"] = 0
+
+                    tempo_dano = 0
+
         for projetil in projeteis[:]:
 
-            #Move Projetil
             projetil.mover()
 
-            distancia = utils.ChecarDistancia(projetil, inimigo)
+            for inimigo in inimigos[:]:
 
-            #Caso o tiro acerte o alvo
-            if distancia < projetil.raio + inimigo.raio:
+                distancia = math.sqrt(
+                    (projetil.x - inimigo.x) ** 2 +
+                    (projetil.y - inimigo.y) ** 2
+                )
 
-                utils.TomarDano(inimigo, jogador)
+                if distancia < projetil.raio + inimigo.raio:
+
+                    inimigo.stats["VIDA_ATUAL"] -= jogador.stats["DANO"]
+
+                    explosoes.append(
+                        Explosao(
+                            projetil.x,
+                            projetil.y
+                        )
+                    )
+
+                    if projetil in projeteis:
+                        projeteis.remove(projetil)
+
+                    if inimigo.stats["VIDA_ATUAL"] <= 0:
+                        inimigos.remove(inimigo)
+                    break
+
+        if len(inimigos) == 0:
+            utils.NovaWave(jogador)
+
+            quantidade_inimigos += 2
+
+            inimigos = utils.Criar_Wave(Inimigo)
+
+        for projetil in projeteis_inimigo[:]:
+
+            projetil.mover()
+
+            distancia = math.sqrt(
+                (projetil.x - jogador.x) ** 2 + (projetil.y - jogador.y) ** 2
+            )
+
+            if distancia < projetil.raio + jogador.raio:
+                jogador.stats["VIDA_ATUAL"] -= projetil.dano
+
+                if jogador.stats["VIDA_ATUAL"] < 0:
+                    jogador.stats["VIDA_ATUAL"] = 0
+                    gamer_over = True
 
                 explosoes.append(
                     Explosao(
@@ -93,12 +212,10 @@ while rodando:
                     )
                 )
 
-                projeteis.remove(projetil)
+                projeteis_inimigo.remove(projetil)
 
-            #Projetil fora da tela
             elif projetil.fora_da_tela():
-
-                projeteis.remove(projetil)
+                projeteis_inimigo.remove(projetil)
 
 
         for explosao in explosoes[:]:
@@ -109,17 +226,20 @@ while rodando:
 
                 explosoes.remove(explosao)
 
-        if inimigo.stats["VIDA_ATUAL"] <= 0:
+        if jogador.stats["VIDA_ATUAL"] == 0:
 
-            utils.InimigoMorto(jogador)
-            inimigo = Inimigo()
+            gamer_over = True
 
     jogador.desenhar()
 
-    inimigo.desenhar()
+    for inimigo in inimigos:
+        inimigo.desenhar()
 
     for projetil in projeteis:
 
+        projetil.desenhar()
+
+    for projetil in projeteis_inimigo:
         projetil.desenhar()
 
     for explosao in explosoes:
@@ -127,52 +247,111 @@ while rodando:
         explosao.desenhar()
 
     texto = fonte.render(
-        f"Vida do inimigo: {inimigo.stats["VIDA_ATUAL"]}",
+        f"Quantidade de inimigos: {len(inimigos)}",
         True,
-        vg.BRANCO
+        BRANCO
     )
 
     tela.blit(texto, (20, 20))
 
-    #Jogo Pausado
+    texto = fonte.render(
+        f"Vida do Player: {jogador.stats["VIDA_ATUAL"]}",
+        True,
+        BRANCO
+    )
+
+    tela.blit(texto, (20, 60))
+
+    texto = fonte.render(
+        f"Wave: {wave}",
+        True,
+        BRANCO
+    )
+
+    tela.blit(texto, (20, 120))
+
     if pause:
 
         texto_menu = fonte.render(
             "Pressione M para voltar ao menu",
             True,
-            vg.BRANCO
+            BRANCO
         )
 
         tela.blit(
             texto_menu,
             (
-                vg.LARGURA // 2 - texto_menu.get_width() // 2,
-                vg.ALTURA // 2 + 50
+                LARGURA // 2 - texto_menu.get_width() // 2,
+                ALTURA // 2 + 50
             )
         )
 
         overlay = pg.Surface(
-            (vg.LARGURA, vg.ALTURA)
+            (LARGURA, ALTURA)
         )
 
         overlay.set_alpha(180)
 
-        overlay.fill(vg.CINZA)
+        overlay.fill(CINZA)
 
         tela.blit(overlay, (0, 0))
 
         texto_pause = fonte_pause.render(
             "PAUSADO",
             True,
-            vg.BRANCO
+            BRANCO
         )
 
         tela.blit(
             texto_pause,
             (
-                vg.LARGURA // 2 - texto_pause.get_width() // 2,
-                vg.ALTURA // 2 - 30
+                LARGURA // 2 - texto_pause.get_width() // 2,
+                ALTURA // 2 - 30
             )
+        )
+
+    if gamer_over:
+
+        overlay = pg.Surface((LARGURA, ALTURA))
+        overlay.set_alpha(200)
+        overlay.fill(CINZA)
+
+        tela.blit(overlay, (0, 0))
+
+        texto_morte = fonte_pause.render(
+            "Você Morreu!",
+            True,
+            VERMELHO
+        )
+
+        tela.blit(
+            texto_morte,
+            (LARGURA // 2 - texto_morte.get_width() // 2,
+             ALTURA // 2 - 80)
+        )
+
+        texto_recomecar = fonte.render(
+            "Pressione R para reiniciar",
+            True,
+            BRANCO
+        )
+
+        tela.blit(
+            texto_recomecar,
+            (LARGURA // 2 - texto_recomecar.get_width() // 2,
+             ALTURA // 2 + 10)
+        )
+
+        texto_menu = fonte.render(
+            "Pressione M para voltar ao menu",
+            True,
+            BRANCO
+        )
+
+        tela.blit(
+            texto_menu,
+            (LARGURA // 2 - texto_menu.get_width() // 2,
+             ALTURA // 2 + 50)
         )
 
     pg.display.update()

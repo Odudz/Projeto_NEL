@@ -28,10 +28,12 @@ def AumentarStatus(personagem, status, quantidade):
 
 def StatusInimigo():
     status = {
-        "VIDA_ATUAL": 100 + 5 * vg.ONDA,
-        "VIDA_MAXIMA": 100 + 5 * vg.ONDA,
-        "DANO": 10 + 1 * vg.ONDA,
-        "TAXA_ATAQUES": 1000 - 10 * vg.ONDA,
+        "VIDA_ATUAL"  : 100 + 5 * vg.ONDA,
+        "VIDA_MAXIMA" : 100 + 5 * vg.ONDA,
+        "DANO"        : 5 + 1 * vg.ONDA,
+        "TAXA_ATAQUES": 120 - 1 * vg.ONDA,
+        "ULTIMO_TIRO" : 0,
+        "VELOCIDADE"  : 2 + 0.05 * vg.ONDA,
         "VELOCIDADE_TIRO": 1 + 0.25 * vg.ONDA,
     }
     return status
@@ -56,13 +58,18 @@ def Tiros(projeteis, Projetil, Jogador):
         Atirar(projeteis, Projetil, Jogador, vg.RAJADAMX, vg.RAJADAMY)
         vg.RAJADA -= 1
 
-def InimigoMorto(Jogador):
-    vg.INIMIGOS_MORTOS += 1
-    if vg.INIMIGOS_MORTOS >= 5 + 2 * vg.ONDA:
-        vg.INIMIGOS_MORTOS = 0
-        vg.ONDA += 1
-        print(f"Nova Onda! {vg.ONDA}")
-        UpgradeAleatorio(Jogador)
+def NovaWave(Jogador):
+    vg.ONDA += 1
+    print(f"Nova Onda! {vg.ONDA}")
+    UpgradeAleatorio(Jogador)
+
+def Criar_Wave(Inimigo):
+    lista = []
+
+    for i in range(5 + 2 * vg.ONDA):
+        lista.append(Inimigo())
+
+    return lista
 
 def ChecarDistancia(Projetil, Inimigo):
     distancia = math.sqrt(
