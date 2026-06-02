@@ -35,7 +35,7 @@ projeteis = []
 explosoes = []
 projeteis_inimigo = []
 
-wave = 1
+vg.ONDA = 0
 quantidade_inimigos = 5
 
 inimigos = utils.Criar_Wave(Inimigo)
@@ -64,7 +64,7 @@ while rodando:
 
             if evento.key == pg.K_r and gamer_over:
                 jogador = Jogador()
-                wave = 1
+                vg.ONDA = 0
                 quantidade_inimigos = 5
                 inimigos = utils.Criar_Wave(Inimigo)
 
@@ -263,7 +263,7 @@ while rodando:
     tela.blit(texto, (20, 60))
 
     texto = fonte.render(
-        f"Wave: {wave}",
+        f"Wave: {vg.ONDA}",
         True,
         BRANCO
     )
