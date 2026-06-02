@@ -66,7 +66,7 @@ def NovaWave(Jogador):
 def Criar_Wave(Inimigo):
     lista = []
 
-    for i in range(5 + 2 * vg.ONDA):
+    for i in range(3 + 1 * vg.ONDA):
         lista.append(Inimigo())
 
     return lista
