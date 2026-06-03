@@ -1,4 +1,5 @@
 import pygame as pg
+import os
 
 # pygame inicialização
 pg.init()
@@ -10,6 +11,31 @@ from utils import StatusInimigo
 class Jogador:
     def __init__(self):
         #Status base do player
+
+        tamanho_sprite = (80, 80)
+
+        self.sprite_w = pg.transform.scale(
+            pg.image.load(os.path.join("Imagens", "Jogo", "atirando_w.png")).convert_alpha(),
+            tamanho_sprite
+        )
+
+        self.sprite_s = pg.transform.scale(
+            pg.image.load(os.path.join("Imagens", "Jogo", "atirando_s.png")).convert_alpha(),
+            tamanho_sprite
+        )
+
+        self.sprite_a = pg.transform.scale(
+            pg.image.load(os.path.join("Imagens", "Jogo", "atirando_a.png")).convert_alpha(),
+            tamanho_sprite
+        )
+
+        self.sprite_d = pg.transform.scale(
+            pg.image.load(os.path.join("Imagens", "Jogo", "aitando_d.png")).convert_alpha(),
+            tamanho_sprite
+        )
+
+        self.sprite = self.sprite_s
+
         self.stats = {
             "VIDA_ATUAL"      : 100, # Vida Atual
             "VIDA_MAXIMA"     : 100, # Vida máxima
@@ -44,15 +70,19 @@ class Jogador:
         #Define velocidade na direção baseado na tecla apertada
         if teclas[pg.K_w]:
             y -= self.vel
+            self.sprite = self.sprite_w
 
         if teclas[pg.K_s]:
             y += self.vel
+            self.sprite = self.sprite_s
 
         if teclas[pg.K_a]:
             x -= self.vel
+            self.sprite = self.sprite_a
 
         if teclas[pg.K_d]:
             x += self.vel
+            self.sprite = self.sprite_d
 
         #Reduz a velocidade em diagonais
         if x != 0 and y != 0:
@@ -67,13 +97,13 @@ class Jogador:
         self.x = max(self.raio, min(vg.LARGURA - self.raio, self.x))
         self.y = max(self.raio, min(vg.ALTURA - self.raio, self.y))
 
-
     def desenhar(self):
-        pg.draw.circle(
-            vg.tela,
-            vg.AZUL,
-            (self.x, self.y),
-            self.raio
+        vg.tela.blit(
+            self.sprite,
+            (
+                self.x - self.sprite.get_width() // 2,
+                self.y - self.sprite.get_height() // 2
+            )
         )
 
         pg.draw.rect(
