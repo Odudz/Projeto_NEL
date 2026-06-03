@@ -78,6 +78,12 @@ class Jogador:
 
         pg.draw.rect(
             vg.tela,
+            vg.VERMELHO,
+            (self.x - 30, self.y - 45, 60, 8)
+        )
+
+        pg.draw.rect(
+            vg.tela,
             vg.VERDE,
             (
                 self.x - 30,
