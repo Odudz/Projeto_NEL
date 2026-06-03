@@ -7,7 +7,7 @@ import os, subprocess, sys
 import gif_pygame as gifpg
 from Modulos import Variaveis_Globais as vg
 
-tela = pg.display.set_mode((1280, 720))
+tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
 clock = pg.time.Clock()
 running = True
 

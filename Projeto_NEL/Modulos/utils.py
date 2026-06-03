@@ -32,22 +32,38 @@ def AumentarStatus(personagem, status, quantidade):
     if personagem.stats and personagem.stats[status]:
         personagem.stats[status] += quantidade
 
-#def randomColor():
-    #color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
-    #return color
+
+def randomClass(status):
+    num = random.randint(1,3)
+    if num == 1: # Mercenário
+        status["DANO"]            = 3 + 1 * vg.ONDA
+        status["VELOCIDADE"]      = 3 + 0.15 * vg.ONDA
+        status["VELOCIDADE_TIRO"] = 1.5 + 0.25 * vg.ONDA
+        status["COLOR"]           = vg.VERDE
+    elif num == 2: # Atirador
+        status["DANO"]            = 5 + 2 * vg.ONDA
+        status["VELOCIDADE_TIRO"] = 10 + .5 * vg.ONDA
+        status["VELOCIDADE"]      = 0 + 0 * vg.ONDA
+        status["COLOR"]           = vg.AMARELO
+    elif num == 3: #Tanque
+        status["VIDA_ATUAL"]  = 50 + 5 * vg.ONDA
+        status["VIDA_MAXIMA"] = 50 + 5 * vg.ONDA
+        status["VELOCIDADE"]  = 1 + 0.05 * vg.ONDA
+        status["COLOR"]       = vg.ROXO
+    return status
 
 #Status base inimigo
 def StatusInimigo():
     status = {
-        "VIDA_ATUAL"  : 100 + 5 * vg.ONDA,
-        "VIDA_MAXIMA" : 100 + 5 * vg.ONDA,
+        "VIDA_ATUAL"  : 30 + 5 * vg.ONDA,
+        "VIDA_MAXIMA" : 30 + 5 * vg.ONDA,
         "DANO"        : 5 + 1 * vg.ONDA,
         "TAXA_ATAQUES": 120 - 1 * vg.ONDA,
         "ULTIMO_TIRO" : 0,
         "VELOCIDADE"  : 2 + 0.05 * vg.ONDA,
-        "VELOCIDADE_TIRO": 1 + 0.25 * vg.ONDA,
-        #"COLOR" : randomColor()
+        "VELOCIDADE_TIRO": 3 + 0.5 * vg.ONDA,
     }
+    status = randomClass(status)
     return status
 
 #Função para tiros
@@ -99,8 +115,13 @@ def ChecarDistancia(Projetil, Inimigo):
     )
     return distancia
 
-#Função que aleatoriza três upgrades para o jogador
+
 def UpgradeAleatorio(Jogador):
+    """
+    Função que aleatoriza três upgrades para o jogador
+    :param Jogador: Retorna o personagem do jogador
+    :return: none
+    """
     upgrades = list(Jogador.stats.items())
     for i in range(3):
         aleatorio = random.choice(upgrades)

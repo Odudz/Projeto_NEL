@@ -99,7 +99,6 @@ class Inimigo:
         self.x = random.randint(500, 850)
         self.y = random.randint(50, 550)
         self.raio = 30
-        self.vida = 100
 
         self.stats = StatusInimigo()
 
@@ -118,7 +117,7 @@ class Inimigo:
     def desenhar(self):
         pg.draw.circle(
             vg.tela,
-            vg.VERMELHO,
+            self.stats["COLOR"],
             (self.x, self.y),
             self.raio
         )
@@ -177,12 +176,12 @@ class Projetil:
         )
 
 class ProjetilInimigo:
-    def __init__(self, x, y, alvo_x, alvo_y, dano):
+    def __init__(self, x, y, alvo_x, alvo_y, stats):
         self.x = x
         self.y = y
         self.raio = 8
-        self.vel = 7
-        self.dano = dano
+        self.vel = stats["VELOCIDADE_TIRO"]
+        self.dano = stats["DANO"]
 
         dx = alvo_x - x
         dy = alvo_y - y

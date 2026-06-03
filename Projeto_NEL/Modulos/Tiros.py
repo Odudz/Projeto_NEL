@@ -14,8 +14,8 @@ som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som.ogg"))
 pausado_original = pg.image.load(os.path.join("Imagens","Jogo", "Pausado.png")).convert()
 pausado = pg.transform.scale(pausado_original, (1280 // 2, 720 // 2))
 
-LARGURA = 1280
-ALTURA = 720
+LARGURA = vg.LARGURA
+ALTURA = vg.ALTURA
 
 tela = pg.display.set_mode((LARGURA, ALTURA))
 pg.display.set_caption("Sistema de Tiros")
@@ -41,7 +41,7 @@ projeteis = []
 explosoes = []
 projeteis_inimigo = []
 
-wave = 1
+vg.ONDA = 0
 quantidade_inimigos = 5
 
 inimigos = utils.Criar_Wave(Inimigo)
@@ -109,7 +109,7 @@ while rodando:
                     inimigo.y,
                     jogador.x,
                     jogador.y,
-                    inimigo.stats["DANO"],
+                    inimigo.stats,
                 ))
 
                 inimigo.stats["ULTIMO_TIRO"] = 0
@@ -244,7 +244,7 @@ while rodando:
     tela.blit(texto, (20, 60))
 
     texto = fonte.render(
-        f"Wave: {wave}",
+        f"Wave: {vg.ONDA}",
         True,
         BRANCO
     )
@@ -301,7 +301,7 @@ while rodando:
 
         if utils.criar_botao_imagem("Reiniciar", vg.botao_folder, vg.LARGURA // 2, 400):
             jogador = Jogador()
-            wave = 1
+            vg.ONDA = 1
             quantidade_inimigos = 5
             inimigos = utils.Criar_Wave(Inimigo)
 
