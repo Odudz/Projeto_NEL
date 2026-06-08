@@ -33,6 +33,7 @@ fonte = pg.font.SysFont("Arial", 28)
 fonte_pause = pg.font.SysFont("Arial", 60)
 
 jogador = Jogador()
+vg.Jogador = jogador
 
 tempo_dano = 0
 
@@ -79,12 +80,12 @@ while rodando:
 
                     som_tiro.play()
 
-                    utils.Atirar(projeteis, Projetil, jogador, mx, my)
+                    utils.Atirar(projeteis, Projetil, mx, my)
                     vg.RAJADA += jogador.stats["QUANTIDADE_TIRO"] - 1
 
     if vg.MENU_MELHORIA:
 
-        utils.melhorias(jogador)
+        utils.melhorias()
 
     else:
 
@@ -100,7 +101,7 @@ while rodando:
             jogador.mover(teclas)
 
             mx, my = pg.mouse.get_pos()
-            utils.Tiros(projeteis, Projetil, jogador)
+            utils.Tiros(projeteis, Projetil)
 
             for inimigo in inimigos:
                 inimigo.mover(jogador)

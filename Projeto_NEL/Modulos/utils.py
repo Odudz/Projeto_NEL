@@ -40,26 +40,26 @@ def TomarDano(personagem, atacante):
     if personagem.stats and personagem.stats["VIDA_ATUAL"]:
         personagem.stats["VIDA_ATUAL"] -= dano
 
-def CurarVida(personagem, vida : int):
+def CurarVida(vida : int):
     """
     Função que cura a vida do personagem
-    :param personagem: Personagem Atual
     :param vida: Vida a ser curada
     :return: None
     """
-    if personagem.stats and personagem.stats["VIDA_ATUAL"]:
-        personagem.stats["VIDA_ATUAL"] = min(personagem.stats["VIDA_ATUAL"] + vida, personagem.stats["VIDA_MAXIMA"])
+    Jogador = vg.Jogador
+    if Jogador.stats and Jogador.stats["VIDA_ATUAL"]:
+        Jogador.stats["VIDA_ATUAL"] = min(Jogador.stats["VIDA_ATUAL"] + vida, Jogador.stats["VIDA_MAXIMA"])
 
-def AumentarStatus(personagem, status, quantidade):
+def AumentarStatus(status, quantidade):
     """
     Função que aumenta status do personagem
-    :param personagem: Personagem atual
     :param status: Status a ser melhorado
     :param quantidade: Quantidade a ser aumentada
     :return: None
     """
-    if personagem.stats and personagem.stats[status]:
-        personagem.stats[status] += quantidade
+    Jogador = vg.Jogador
+    if Jogador.stats and Jogador.stats[status]:
+        Jogador.stats[status] += quantidade
 
 def randomClass(status):
     """
@@ -143,7 +143,7 @@ def StatusChefe():
     status = randomClassChefe(status)
     return status
 
-def Atirar(projeteis, Projetil, Jogador, Mx, My):
+def Atirar(projeteis, Projetil, Mx, My):
     """
     Função para tiros
     :param projeteis: Lista de projeteis
@@ -153,6 +153,7 @@ def Atirar(projeteis, Projetil, Jogador, Mx, My):
     :param My: Posição Y do mouse
     :return: None
     """
+    Jogador = vg.Jogador
     if Jogador.stats["VIDA_ATUAL"] <= 0:
         return
     agora = pg.time.get_ticks()
@@ -168,19 +169,19 @@ def Atirar(projeteis, Projetil, Jogador, Mx, My):
     vg.PROXIMA_RAJADA = agora + Jogador.stats["TAXA_ATAQUES"] / (1.5 * Jogador.stats["QUANTIDADE_TIRO"])
     vg.RAJADAMX, vg.RAJADAMY = Mx, My
 
-def Tiros(projeteis, Projetil, Jogador):
+def Tiros(projeteis, Projetil):
     """
     SubFunção para tiros
     :param projeteis: Lista de projeteis
     :param Projetil: Projetil atual
-    :param Jogador: Jogador atual
     :return: None
     """
+    Jogador = vg.Jogador
     if Jogador.stats["VIDA_ATUAL"] <= 0:
         return
     agora = pg.time.get_ticks()
     if vg.RAJADA > 0 and agora >= vg.PROXIMA_RAJADA:
-        Atirar(projeteis, Projetil, Jogador, vg.RAJADAMX, vg.RAJADAMY)
+        Atirar(projeteis, Projetil, vg.RAJADAMX, vg.RAJADAMY)
         vg.RAJADA -= 1
 
 def NovaWave():
@@ -229,12 +230,13 @@ def ChecarDistancia(Projetil, Inimigo):
     )
     return distancia
 
-def UpgradeAleatorio(Jogador):
+def UpgradeAleatorio():
     """
     Função que aleatoriza três upgrades para o jogador
     :param Jogador: Retorna o personagem do jogador
     :return: none
     """
+    Jogador = vg.Jogador
     upgrades = list(Jogador.stats.items())
     for i in range(3):
         aleatorio = random.choice(upgrades)
@@ -284,8 +286,8 @@ def criar_botao_imagem(texto, imagem, x, y):
 
     return clicou
 
-def melhorias(Jogador):
-
+def melhorias():
+    Jogador = vg.Jogador
     if not vg.MENU_MELHORIA:
         return
 
@@ -338,8 +340,8 @@ def melhorias(Jogador):
 
         aleatorio = vg.UpgradeAleatorio[i]
         if vg.UpgradeAleatorio[i] == "Nenhum":
+
             aleatorio = random.randint(0, len(vg.MELHORIAS_ATUAIS) - 1)
-            print(len(vg.MELHORIAS_ATUAIS))
             vg.UpgradeAleatorio[i] = aleatorio
             return
 
@@ -389,5 +391,14 @@ def melhorias(Jogador):
 
 def SpawnAleatorio():
     while True:
-        x = random.randint(500, 850)
-        y = random.randint(50, 550)
+        x = random.randint(20, 1000)
+        y = random.randint(20, 700)
+
+        distancia = math.sqrt(
+            (x - vg.Jogador.x) ** 2 +
+            (y - vg.Jogador.y) ** 2
+        )
+
+        if distancia >= 350:
+            break
+    return x, y

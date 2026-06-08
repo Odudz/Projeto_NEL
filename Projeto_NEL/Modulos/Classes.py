@@ -6,7 +6,7 @@ pg.init()
 
 import Variaveis_Globais as vg
 import random, math
-from utils import StatusInimigo
+from utils import StatusInimigo, SpawnAleatorio
 
 class Jogador:
     def __init__(self):
@@ -41,9 +41,9 @@ class Jogador:
             "VIDA_MAXIMA"     : 100, # Vida máxima
             "DANO"            : 100,  # Dano base
             "VELOCIDADE"      : 5,   # Velocidade do player
-            "TAXA_ATAQUES"    : 500, # Tempo em milissegundos entre os tiros
+            "TAXA_ATAQUES"    : 5, # Tempo em milissegundos entre os tiros
             "VELOCIDADE_TIRO" : 10,  # Velocidade do tiro
-            "QUANTIDADE_TIRO" : 1,   # Quantidade de tiros disparados de uma vez
+            "QUANTIDADE_TIRO" : 50,   # Quantidade de tiros disparados de uma vez
             "CHANCE_CRITICO"  : 25,  # Chance de critico %
             "DANO_CRITICO"    : 2,   # Quantia que multiplicará em caso de critico
         }
@@ -126,8 +126,7 @@ class Jogador:
 
 class Inimigo:
     def __init__(self):
-        self.x = random.randint(500, 850)
-        self.y = random.randint(50, 550)
+        self.x, self.y = SpawnAleatorio()
         self.raio = 30
 
         self.stats = StatusInimigo()
