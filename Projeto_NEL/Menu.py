@@ -11,11 +11,6 @@ tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
 clock = pg.time.Clock()
 running = True
 
-# FONTES
-fonte = pg.font.SysFont("arial", 35)
-fonte_nome_menu = pg.font.SysFont("arial", 70)
-fonte_creditos = pg.font.SysFont("arial", 25)
-
 # IMAGENS:
 fundo_original = pg.image.load(os.path.join( "Imagens", "Menu", "fundoFaroeste.jpeg")).convert()
 fundo = pg.transform.scale(fundo_original, tela.get_size())
@@ -67,11 +62,11 @@ def creditos():
     vg.tela.fill(vg.PRETO)
 
     textos = [
-        "ESC para sair",
-        "Programacao:",
-        "Eduardo Pimenta",
-        "Natália Sales",
-        "Leonardo Portes",
+        "'ESC' para sair",
+        "Programacao: ",
+        "Eduardo Pimenta, "
+        "Natália Sales, "
+        "Leonardo Portes, "
         "",
         "Arte:",
         "@Ghilphea",
@@ -79,7 +74,8 @@ def creditos():
         "Musicas:",
         "",
         "Efeitos especiais",
-        "Juliano Jeremias",
+        "Juliano Jeremias, "
+        "Pedro Viana"
     ]
 
     y = 50

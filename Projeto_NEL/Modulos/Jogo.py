@@ -8,11 +8,15 @@ from Classes import Jogador, Inimigo, Projetil, ProjetilInimigo, Explosao
 import utils, subprocess, sys, os, math
 
 #Som tiro
-som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som.ogg"))
+som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som_personagem.mp3"))
+som_tiro_sniper = pg.mixer.Sound(os.path.join("Sons", "tiro_som_sniper.mp3"))
 
 #Imagens
 pausado_original = pg.image.load(os.path.join("Imagens","Jogo", "Pausado.png"))
 pausado = pg.transform.scale(pausado_original, (1280 // 2, 720 // 2))
+
+fundo_original = pg.image.load(os.path.join( "Imagens", "Jogo", "fundo_temp.jpg")).convert()
+fundo = pg.transform.scale(fundo_original, vg.tela.get_size())
 
 texto_morte_original = pg.image.load(os.path.join("Imagens","Jogo", "texto_morte.png"))
 texto_morte = pg.transform.scale(texto_morte_original, (1280 // 2, 720 // 2))
@@ -28,9 +32,6 @@ AMARELO = (255, 255, 0)
 CINZA = (40, 40, 40)
 
 clock = pg.time.Clock()
-
-fonte = pg.font.SysFont("Arial", 28)
-fonte_pause = pg.font.SysFont("Arial", 60)
 
 jogador = Jogador()
 vg.Jogador = jogador
@@ -89,7 +90,7 @@ while rodando:
 
     else:
 
-        vg.tela.fill(PRETO)
+        vg.tela.blit(fundo, (0, 0))
 
         if not pause and not gamer_over:
 
@@ -109,7 +110,8 @@ while rodando:
                 inimigo.stats["ULTIMO_TIRO"] += 1
 
                 if inimigo.stats["ULTIMO_TIRO"] >= inimigo.stats["TAXA_ATAQUES"]:
-                    som_tiro.play()
+                    som_tiro_sniper.play()
+                    som_tiro_sniper.play()
                     projeteis_inimigo.append( ProjetilInimigo(
                         inimigo.x,
                         inimigo.y,
@@ -233,7 +235,7 @@ while rodando:
 
             explosao.desenhar()
 
-        texto = fonte.render(
+        texto = vg.fonte_jogo.render(
             f"Quantidade de inimigos: {len(inimigos)}",
             True,
             BRANCO
@@ -241,7 +243,7 @@ while rodando:
 
         vg.tela.blit(texto, (20, 20))
 
-        texto = fonte.render(
+        texto = vg.fonte_jogo.render(
             f"Vida do Player: {jogador.stats["VIDA_ATUAL"]}",
             True,
             BRANCO
@@ -249,7 +251,7 @@ while rodando:
 
         vg.tela.blit(texto, (20, 60))
 
-        texto = fonte.render(
+        texto = vg.fonte_jogo.render(
             f"Wave: {vg.ONDA}",
             True,
             BRANCO

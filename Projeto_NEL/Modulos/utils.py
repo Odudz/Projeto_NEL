@@ -315,7 +315,7 @@ def melhorias():
     vg.tela.blit(overlay, (0, 0))
 
     titulo = vg.fonte.render(
-        "Escolha uma melhoria",
+        "Escolha uma melhoria!",
         True,
         vg.BRANCO
     )
@@ -347,7 +347,7 @@ def melhorias():
 
         melhoria = vg.MELHORIAS_ATUAIS[aleatorio]
 
-        texto_upgrade = f"+25% {melhoria.lower()}"
+        texto_upgrade = melhoria.lower()
 
         if criar_botao_imagem(
             texto_upgrade,
@@ -386,6 +386,7 @@ def melhorias():
             vg.MENU_MELHORIA = False
             vg.ESCOLHENDO_MELHORIA = False
             vg.UpgradeAleatorio[i] = "Nenhum"
+
 
     pg.display.update()
 

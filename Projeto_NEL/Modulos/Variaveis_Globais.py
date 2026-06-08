@@ -41,6 +41,7 @@ botao_folder_original = pg.image.load(os.path.join( "Imagens", "Menu", "botao_fo
 botao_folder = pg.transform.scale(botao_folder_original, (400,200))
 
 # FONTES
-fonte = pg.font.SysFont("arial", 35)
-fonte_nome_menu = pg.font.SysFont("arial", 70)
-fonte_creditos = pg.font.SysFont("arial", 25)
+fonte = pg.font.Font("Fonte/texat_bold.otf", 15)
+fonte_nome_menu = pg.font.Font("Fonte/texat_bold.otf", 50)
+fonte_creditos = pg.font.Font("Fonte/texat_bold.otf", 20)
+fonte_jogo = pg.font.Font("Fonte/Western.ttf", 30)
