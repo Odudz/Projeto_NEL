@@ -1,4 +1,5 @@
-import pygame as pg, os
+import pygame as pg
+import os
 
 LARGURA = 1280
 ALTURA = 720
@@ -23,6 +24,15 @@ RAJADAMX = 0
 RAJADAMY = 0
 
 PROXIMO_TIRO = 0
+
+MENU_MELHORIA = False
+ESCOLHENDO_MELHORIA = False
+
+UpgradeAleatorio = [
+    "Nenhum",
+    "Nenhum",
+    "Nenhum",
+]
 
 IMAGENS = "Imagens"
 SONS    = "Sons"

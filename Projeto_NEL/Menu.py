@@ -122,7 +122,7 @@ while running:
 
         if criar_botao_imagem("Começar jogo", vg.botao_folder, 640, 400):
             pg.quit()
-            subprocess.run([sys.executable, os.path.join("Modulos", "Tiros.py")])
+            subprocess.run([sys.executable, os.path.join("Modulos", "Jogo.py")])
             sys.exit()
 
         if criar_botao_imagem("Créditos", vg.botao_folder, 640, 500):

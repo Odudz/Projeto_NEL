@@ -39,7 +39,7 @@ class Jogador:
         self.stats = {
             "VIDA_ATUAL"      : 100, # Vida Atual
             "VIDA_MAXIMA"     : 100, # Vida máxima
-            "DANO"            : 10,  # Dano base
+            "DANO"            : 100,  # Dano base
             "VELOCIDADE"      : 5,   # Velocidade do player
             "TAXA_ATAQUES"    : 500, # Tempo em milissegundos entre os tiros
             "VELOCIDADE_TIRO" : 10,  # Velocidade do tiro
