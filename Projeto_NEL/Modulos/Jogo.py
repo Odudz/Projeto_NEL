@@ -3,9 +3,10 @@ import pygame as pg
 # pygame inicialização
 pg.init()
 
-import Variaveis_Globais as vg
-from Classes import Jogador, Inimigo, Projetil, ProjetilInimigo, Explosao
-import utils, subprocess, sys, os, math
+from Modulos import Variaveis_Globais as vg
+from Modulos.Classes import Jogador, Inimigo, Projetil, ProjetilInimigo, Explosao
+from Modulos import utils
+import subprocess, sys, os, math
 
 #Som tiro
 som_tiro = pg.mixer.Sound(os.path.join("Sons", "tiro_som_personagem.mp3"))

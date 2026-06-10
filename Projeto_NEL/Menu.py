@@ -6,6 +6,7 @@ pg.init()
 import os, subprocess, sys
 import gif_pygame as gifpg
 from Modulos import Variaveis_Globais as vg
+from Modulos import utils
 
 tela = pg.display.set_mode((vg.LARGURA, vg.ALTURA))
 clock = pg.time.Clock()
@@ -26,36 +27,6 @@ gif_y = 400
 #Musica de fundo
 MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
-
-def criar_botao_imagem(texto, imagem, x, y):
-    global ultimo_clique
-
-    mouse = pg.mouse.get_pos()
-    clique = pg.mouse.get_pressed()
-
-    # Cria o retângulo com base na posição (x, y) e tamanho da imagem
-    botao = imagem.get_rect(center=(x,y))
-    botao_menor = botao.inflate(-100, -50)
-
-    agora = pg.time.get_ticks()
-    clicou = False
-
-    if botao_menor.collidepoint(mouse):
-        # Verifica clique + cooldown
-        if clique[0] and agora - ultimo_clique > 1000:
-            ultimo_clique = agora
-            clicou = True
-
-    # 1. Desenha a imagem do botão na tela
-    vg.tela.blit(imagem, botao)
-
-
-    # 2. Renderiza e centraliza o texto por cima da imagem
-    texto_render = vg.fonte.render(texto, True, vg.BRANCO)
-    texto_rect = texto_render.get_rect(center=botao.center)
-    vg.tela.blit(texto_render, texto_rect)
-
-    return clicou
 
 def creditos():
     vg.tela.fill(vg.PRETO)
@@ -115,15 +86,18 @@ while running:
 
         tela.blit(titulo_nome, (325, 50))
 
-        if criar_botao_imagem("Começar jogo", vg.botao_folder, 640, 400):
+        if utils.criar_botao_imagem("Começar jogo", vg.botao_folder, 640, 400):
             pg.quit()
-            subprocess.run([sys.executable, os.path.join("Modulos", "Jogo.py")])
+            subprocess.run(
+                [sys.executable, "-m", "Modulos.Jogo"],
+                cwd=os.path.dirname(os.path.abspath(__file__))
+            )
             sys.exit()
 
-        if criar_botao_imagem("Créditos", vg.botao_folder, 640, 500):
+        if utils.criar_botao_imagem("Créditos", vg.botao_folder, 640, 500):
             tela_atual = "creditos"
 
-        if criar_botao_imagem("Sair", vg.botao_folder, 640, 600):
+        if utils.criar_botao_imagem("Sair", vg.botao_folder, 640, 600):
             running = False
 
     elif tela_atual == "creditos":

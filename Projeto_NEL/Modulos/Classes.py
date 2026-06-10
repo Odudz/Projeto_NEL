@@ -4,9 +4,9 @@ import os
 # pygame inicialização
 pg.init()
 
-import Variaveis_Globais as vg
+from Modulos import Variaveis_Globais as vg
 import random, math
-from utils import StatusInimigo, SpawnAleatorio
+from Modulos.utils import StatusInimigo, SpawnAleatorio
 
 class Jogador:
     def __init__(self):

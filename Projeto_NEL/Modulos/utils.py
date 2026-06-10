@@ -1,5 +1,5 @@
 import random, math, time, os
-import Variaveis_Globais as vg
+from Modulos import Variaveis_Globais as vg
 import pygame as pg
 
 ultimo_clique = 0
