@@ -23,7 +23,6 @@ backgroundGif = gifpg.load(os.path.join("Imagens", "Menu", "Arbusto_Rolante.gif"
 gif_x = -200
 gif_y = 400
 
-
 #Musica de fundo
 MUSICA_FUNDO = pg.mixer_music.load(os.path.join( vg.SONS, "musica_fundo.mp3"))
 pg.mixer.music.play(-1)
@@ -69,7 +68,7 @@ def creditos():
         "Leonardo Portes, "
         "",
         "Arte:",
-        "@Ghilphea",
+        "@Ghilphea, @gui.h2006",
         "",
         "Musicas:",
         "",

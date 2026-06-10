@@ -299,6 +299,7 @@ while rodando:
 
             if utils.criar_botao_imagem("Reiniciar", vg.botao_folder, vg.LARGURA // 2, 400):
                 jogador = Jogador()
+                vg.Jogador = jogador
                 vg.ONDA = 0
                 quantidade_inimigos = 5
                 inimigos = utils.Criar_Wave(Inimigo)
